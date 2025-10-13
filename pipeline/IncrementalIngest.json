@@ -133,8 +133,6 @@
 			{
 				"name": "Copy data2",
 				"type": "Copy",
-				"state": "Inactive",
-				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "Script1",
@@ -158,7 +156,7 @@
 							{
 								"name": "cdc",
 								"value": {
-									"value": "kjckjadskjaskd",
+									"value": "@activity('Script1').output.resultSets[0].rows[0].cdc",
 									"type": "Expression"
 								}
 							}
