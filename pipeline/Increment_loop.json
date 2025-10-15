@@ -9,7 +9,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"items": {
-						"value": "@variables('current')",
+						"value": "@pipeline().parameters.loop_test",
 						"type": "Expression"
 					},
 					"activities": [
@@ -184,7 +184,7 @@
 												"parameters": {
 													"container": "bronze",
 													"folder": {
-														"value": "@item().table",
+														"value": "@{item().table}_cdc",
 														"type": "Expression"
 													},
 													"file": {
@@ -275,7 +275,7 @@
 												"parameters": {
 													"cotainer": "bronze",
 													"folder": {
-														"value": "@item().table",
+														"value": "@{item().table}_cdc",
 														"type": "Expression"
 													},
 													"file": {
