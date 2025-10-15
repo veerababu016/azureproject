@@ -3,11 +3,11 @@
 	"properties": {
 		"activities": [
 			{
-				"name": "Copy data1",
+				"name": "data1",
 				"type": "Copy",
 				"dependsOn": [
 					{
-						"activity": "Lookup1",
+						"activity": "lastCDC",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -31,7 +31,7 @@
 					"source": {
 						"type": "AzureSqlSource",
 						"sqlReaderQuery": {
-							"value": "select * from @{pipeline().parameters.schema}.@{pipeline().parameters.table} where @{pipeline().parameters.cdc} > '@{activity('Lookup1').output.value[0].cdc}'",
+							"value": "select * from @{pipeline().parameters.schema}.@{pipeline().parameters.table} where @{pipeline().parameters.cdc} > '@{activity('lastCDC').output.value[0].cdc}'",
 							"type": "Expression"
 						},
 						"queryTimeout": "02:00:00",
@@ -81,7 +81,7 @@
 				]
 			},
 			{
-				"name": "Lookup1",
+				"name": "lastCDC",
 				"type": "Lookup",
 				"dependsOn": [],
 				"policy": {
@@ -134,11 +134,11 @@
 				}
 			},
 			{
-				"name": "If Condition1",
+				"name": "incrementalData",
 				"type": "IfCondition",
 				"dependsOn": [
 					{
-						"activity": "Copy data1",
+						"activity": "data1",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -147,7 +147,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"expression": {
-						"value": "@greater(activity('Copy data1').output.dataRead,0)",
+						"value": "@greater(activity('data1').output.dataRead,0)",
 						"type": "Expression"
 					},
 					"ifFalseActivities": [
@@ -190,11 +190,11 @@
 					],
 					"ifTrueActivities": [
 						{
-							"name": "Copy data2",
+							"name": "updated_latest_cdc",
 							"type": "Copy",
 							"dependsOn": [
 								{
-									"activity": "Script1",
+									"activity": "max_cdc",
 									"dependencyConditions": [
 										"Succeeded"
 									]
@@ -215,7 +215,7 @@
 										{
 											"name": "cdc",
 											"value": {
-												"value": "@activity('Script1').output.resultSets[0].rows[0].cdc",
+												"value": "@activity('max_cdc').output.resultSets[0].rows[0].cdc",
 												"type": "Expression"
 											}
 										}
@@ -264,7 +264,7 @@
 							]
 						},
 						{
-							"name": "Script1",
+							"name": "max_cdc",
 							"type": "Script",
 							"dependsOn": [],
 							"policy": {
