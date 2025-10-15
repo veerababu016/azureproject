@@ -8,6 +8,10 @@
 				"dependsOn": [],
 				"userProperties": [],
 				"typeProperties": {
+					"items": {
+						"value": "@variables('current')",
+						"type": "Expression"
+					},
 					"activities": [
 						{
 							"name": "data1",
@@ -270,8 +274,14 @@
 												"type": "DatasetReference",
 												"parameters": {
 													"cotainer": "bronze",
-													"folder": "cdc",
-													"file": "cdc.json"
+													"folder": {
+														"value": "@item().table",
+														"type": "Expression"
+													},
+													"file": {
+														"value": "@concat(item().table,'_',variables('current'))",
+														"type": "Expression"
+													}
 												}
 											}
 										]
